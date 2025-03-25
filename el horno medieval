@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="medieval">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Horno de las Tortas Ancestrales</title>
+<link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+<style>
+:root {
+--oro: #cda434;
+--burdeos: #6d1a1a;
+--madera: #3a2a1a;
+--pergamino: #f0e6d3;
+--piedra: #7a7569;
+}    body {
+        font-family: 'MedievalSharp', cursive;
+        background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAIklEQVQIW2NkQAKrVq36zwjjgzhhYWGMYAEYB8RmROaABADeOQ8CXl/xfgAAAABJRU5ErkJggg==') var(--pergamino);
+        color: var(--madera);
+        margin: 0;
+        min-height: 100vh;
+    }
+
+    .pantalla {
+        display: none;
+    }
+
+    .pantalla.active {
+        display: block;
+    }
+
+    .nav-btn {
+        background: var(--oro);
+        color: var(--burdeos);
+        border: 2px solid var(--burdeos);
+        padding: 1rem 2rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-family: 'UnifrakturMaguntia', cursive;
+        margin: 1rem;
+        width: 200px;
+        font-size: 1.2rem;
+    }
+
+    .nav-btn:hover {
+        transform: scale(1.1);
+        background: var(--burdeos);
+        color: var(--oro);
+    }
+
+    .torta-item {
+        background: linear-gradient(to bottom right, #f0e6d3, #e2d4b8);
+        border: 2px solid var(--burdeos);
+        padding: 1.5rem;
+        margin: 1rem;
+        box-shadow: 5px 5px 10px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+
+    .carrito-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 1rem 0;
+        padding: 0.5rem;
+        border-bottom: 1px dashed var(--burdeos);
+    }
+
+    header {
+        background: var(--madera);
+        padding: 1rem;
+        text-align: center;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+        color: var(--oro);
+        margin: 0;
+        font-family: 'UnifrakturMaguntia', cursive;
+    }
+
+    #inicio {
+        text-align: center;
+        padding: 2rem;
+    }
+
+    .historia {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 1rem;
+        line-height: 1.6;
+    }
+
+    .contacto {
+        text-align: center;
+        font-size: 1.2rem;
+        padding: 2rem;
+    }
+
+    /* Nuevos estilos agregados */
+    .producto-imagen {
+        height: 150px;
+        background: var(--pergamino);
+        border: 1px dashed var(--burdeos);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 1rem;
+        background-size: cover;
+        background-position: center;
+    }
+
+    #buscadorMenu {
+        padding: 0.5rem;
+        width: 80%;
+        max-width: 500px;
+        font-family: 'MedievalSharp';
+        border: 2px solid var(--burdeos);
+        background: var(--pergamino);
+    }
+
+    .recomendacion-item {
+        min-width: 200px;
+        padding: 1rem;
+        background: linear-gradient(to bottom right, #f0e6d3, #e2d4b8);
+        border: 2px solid var(--burdeos);
+        text-align: center;
+    }
+
+    @keyframes volar {
+        0% { transform: translate(-50%, -50%); opacity: 1; }
+        100% { transform: translate(-50%, -200%); opacity: 0; }
+    }
+
+    .filtros-container {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin: 1rem;
+    }
+
+    .scroll-recomendaciones {
+        display: flex;
+        overflow-x: auto;
+        gap: 1rem;
+        padding: 1rem;
+        justify-content: flex-start;
+    }
+
+    @media (max-width: 768px) {
+        .nav-btn {
+            width: 150px;
+            padding: 0.8rem 1rem;
+            font-size: 1rem;
+        }
+        
+        .producto-imagen {
+            height: 120px;
+        }
+        
+        .recomendacion-item {
+            min-width: 160px;
+        }
+    }
+</style>
+</head>
+<body>
+<!-- Pantalla de Inicio -->
+<div id="inicio" class="pantalla active">
+<header>
+<h1>🏰 El Horno de las Tortas Ancestrales 🏰</h1>
+</header>    <button class="nav-btn" onclick="mostrarPantalla('menu')">📜 Menú Mágico</button>
+    <button class="nav-btn" onclick="mostrarPantalla('historia')">📖 Nuestra Historia</button>
+    <button class="nav-btn" onclick="mostrarPantalla('contacto')">📬 Contacto</button>
+    <button class="nav-btn" onclick="mostrarPantalla('carrito')">🛒 Ver Saco (<span id="contadorCarrito">0</span>)</button>
+
+    <!-- Sección de Recomendaciones -->
+    <div style="margin-top: 2rem;">
+        <h2>⚔️ Recomendaciones del Herrero</h2>
+        <div class="scroll-recomendaciones">
+            <div class="recomendacion-item">
+                <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/150?text=Fénix')"></div>
+                <h3>🔥 Torta del Fénix</h3>
+                <button class="nav-btn" onclick="agregarAlCarrito('Torta del Fénix', 120)">120 🪙</button>
+            </div>
+            <div class="recomendacion-item">
+                <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/150?text=Dragón')"></div>
+                <h3>🐉 Torta de Dragón</h3>
+                <button class="nav-btn" onclick="agregarAlCarrito('Torta de Dragón', 200)">200 🪙</button>
+            </div>
+            <div class="recomendacion-item">
+                <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/150?text=Unicornio')"></div>
+                <h3>🦄 Magdalenas</h3>
+                <button class="nav-btn" onclick="agregarAlCarrito('Magdalenas Unicornio', 250)">250 🪙</button>
+            </div>
+            <div class="recomendacion-item">
+                <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/150?text=Sirena')"></div>
+                <h3>🧜‍♀️ Tarta Sirena</h3>
+                <button class="nav-btn" onclick="agregarAlCarrito('Tarta de Sirena', 220)">220 🪙</button>
+            </div>
+            <div class="recomendacion-item">
+                <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/150?text=Elfo')"></div>
+                <h3>🧝‍♂️ Tarta Élfica</h3>
+                <button class="nav-btn" onclick="agregarAlCarrito('Tarta Élfica', 180)">180 🪙</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Menú -->
+<div id="menu" class="pantalla">
+    <header>
+        <h1>📜 Menú Mágico</h1>
+        <button class="nav-btn" onclick="volverInicio()">🏠 Volver al Inicio</button>
+    </header>
+
+    <!-- Barra de búsqueda -->
+    <div style="text-align: center; margin: 1rem;">
+        <input type="text" id="buscadorMenu" placeholder="🔍 Buscar en los pergaminos..." 
+               oninput="filtrarProductos()">
+    </div>
+
+    <!-- Filtros por categoría -->
+    <div class="filtros-container">
+        <button class="nav-btn" onclick="filtrarPorCategoria('todos')">Todos</button>
+        <button class="nav-btn" onclick="filtrarPorCategoria('panes')">Panes</button>
+        <button class="nav-btn" onclick="filtrarPorCategoria('tortas')">Tortas</button>
+        <button class="nav-btn" onclick="filtrarPorCategoria('dulces')">Dulces</button>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); padding: 1rem;">
+        <!-- Producto 1 -->
+        <div class="torta-item" data-categoria="tortas" data-nombre="fénix">
+            <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/300?text=Fénix')"></div>
+            <h3>🔥 Torta del Fénix Resurgente</h3>
+            <p>Pan de centeno ancestral + Carne de grifo + Hongos luminosos</p>
+            <div style="color: var(--burdeos); font-size: 1.4rem;">120 🪙</div>
+            <button class="nav-btn" onclick="agregarAlCarrito('Torta del Fénix', 120)">✨ Conjurar</button>
+        </div>
+
+        <!-- Producto 2 -->
+        <div class="torta-item" data-categoria="panes" data-nombre="guerrero">
+            <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/300?text=Guerrero')"></div>
+            <h3>🍞 Pan del Guerrero Imponente</h3>
+            <p>Harina de trigo negro + Miel de avispas gigantes + Semillas de dragón</p>
+            <div style="color: var(--burdeos); font-size: 1.4rem;">85 🪙</div>
+            <button class="nav-btn" onclick="agregarAlCarrito('Pan del Guerrero', 85)">✨ Conjurar</button>
+        </div>
+
+        <!-- Producto 3 -->
+        <div class="torta-item" data-categoria="tortas" data-nombre="minotauro">
+            <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/300?text=Minotauro')"></div>
+            <h3>🧀 Tarta de Queso del Minotauro</h3>
+            <p>Leche de vaca sagrada + Hierbas del laberinto + Corteza de roble</p>
+            <div style="color: var(--burdeos); font-size: 1.4rem;">150 🪙</div>
+            <button class="nav-btn" onclick="agregarAlCarrito('Tarta de Queso', 150)">✨ Conjurar</button>
+        </div>
+
+        <!-- Producto 4 -->
+        <div class="torta-item" data-categoria="dulces" data-nombre="druida">
+            <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/300?text=Druida')"></div>
+            <h3>🍯 Bizcocho del Druida</h3>
+            <p>Harina de bellota + Polen de hadas + Savia de árbol anciano</p>
+            <div style="color: var(--burdeos); font-size: 1.4rem;">95 🪙</div>
+            <button class="nav-btn" onclick="agregarAlCarrito('Bizcocho del Druida', 95)">✨ Conjurar</button>
+        </div>
+
+        <!-- Producto 5 -->
+        <div class="torta-item" data-categoria="tortas" data-nombre="dragón">
+            <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/300?text=Dragón')"></div>
+            <h3>🐉 Torta de Escamas de Dragón</h3>
+            <p>Harina de carbón + Escamas molidas de dragón rojo + Lágrimas de sirena</p>
+            <div style="color: var(--burdeos); font-size: 1.4rem;">200 🪙</div>
+            <button class="nav-btn" onclick="agregarAlCarrito('Torta de Dragón', 200)">✨ Conjurar</button>
+        </div>
+
+        <!-- Producto 6 -->
+        <div class="torta-item" data-categoria="dulces" data-nombre="hadas">
+            <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/300?text=Hadas')"></div>
+            <h3>🧚‍♂️ Pastel de las Hadas Silvestres</h3>
+            <p>Polvo de estrellas + Miel de flores prohibidas + Alas de hada cristalizadas</p>
+            <div style="color: var(--burdeos); font-size: 1.4rem;">175 🪙</div>
+            <button class="nav-btn" onclick="agregarAlCarrito('Pastel de Hadas', 175)">✨ Conjurar</button>
+        </div>
+
+        <!-- Producto 7 -->
+        <div class="torta-item" data-categoria="panes" data-nombre="gigante">
+            <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/300?text=Gigante')"></div>
+            <h3>🏔️ Hogaza del Gigante Durmiente</h3>
+            <p>Harina de montaña + Levadura de caverna + Sal de lagos subterráneos</p>
+            <div style="color: var(--burdeos); font-size: 1.4rem;">90 🪙</div>
+            <button class="nav-btn" onclick="agregarAlCarrito('Hogaza Gigante', 90)">✨ Conjurar</button>
+        </div>
+
+        <!-- Producto 8 -->
+        <div class="torta-item" data-categoria="tortas" data-nombre="unicornio">
+            <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/300?text=Unicornio')"></div>
+            <h3>🦄 Magdalenas de Cuerno de Unicornio</h3>
+            <p>Polvo de cuerno de unicornio + Leche de nube + Azúcar arcoíris</p>
+            <div style="color: var(--burdeos); font-size: 1.4rem;">250 🪙</div>
+            <button class="nav-btn" onclick="agregarAlCarrito('Magdalenas Unicornio', 250)">✨ Conjurar</button>
+        </div>
+
+        <!-- Producto 9 -->
+        <div class="torta-item" data-categoria="dulces" data-nombre="bruja">
+            <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/300?text=Bruja')"></div>
+            <h3>🧙‍♀️ Galletas de la Bruja Sabia</h3>
+            <p>Harina de mandrágora + Huevos de basiliscos + Chocolate negro encantado</p>
+            <div style="color: var(--burdeos); font-size: 1.4rem;">110 🪙</div>
+            <button class="nav-btn" onclick="agregarAlCarrito('Galletas de Bruja', 110)">✨ Conjurar</button>
+        </div>
+
+        <!-- Producto 10 -->
+        <div class="torta-item" data-categoria="panes" data-nombre="enano">
+            <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/300?text=Enano')"></div>
+            <h3>⛏️ Pan de las Minas Enanas</h3>
+            <p>Harina de roca + Agua de manantial profundo + Semillas de cristal</p>
+            <div style="color: var(--burdeos); font-size: 1.4rem;">75 🪙</div>
+            <button class="nav-btn" onclick="agregarAlCarrito('Pan Enano', 75)">✨ Conjurar</button>
+        </div>
+
+        <!-- Producto 11 -->
+        <div class="torta-item" data-categoria="tortas" data-nombre="elfo">
+            <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/300?text=Elfo')"></div>
+            <h3>🧝‍♂️ Tarta Élfica del Bosque Eterno</h3>
+            <p>Frutos del árbol milenario + Néctar de flor lunar + Masa de savia dorada</p>
+            <div style="color: var(--burdeos); font-size: 1.4rem;">180 🪙</div>
+            <button class="nav-btn" onclick="agregarAlCarrito('Tarta Élfica', 180)">✨ Conjurar</button>
+        </div>
+
+        <!-- Producto 12 -->
+        <div class="torta-item" data-categoria="dulces" data-nombre="mago">
+            <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/300?text=Mago')"></div>
+            <h3>🔮 Rosquillas del Mago Merlín</h3>
+            <p>Anillos de polvo de hechizo + Glaseado de runas + Relleno de conocimiento arcano</p>
+            <div style="color: var(--burdeos); font-size: 1.4rem;">160 🪙</div>
+            <button class="nav-btn" onclick="agregarAlCarrito('Rosquillas Mágicas', 160)">✨ Conjurar</button>
+        </div>
+
+        <!-- Producto 13 -->
+        <div class="torta-item" data-categoria="panes" data-nombre="barbaro">
+            <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/300?text=Bárbaro')"></div>
+            <h3>🪓 Pan Bárbaro del Norte</h3>
+            <p>Harina de trigo de batalla + Agua de glaciar + Sal de lágrimas de enemigos</p>
+            <div style="color: var(--burdeos); font-size: 1.4rem;">85 🪙</div>
+            <button class="nav-btn" onclick="agregarAlCarrito('Pan Bárbaro', 85)">✨ Conjurar</button>
+        </div>
+
+        <!-- Producto 14 -->
+        <div class="torta-item" data-categoria="tortas" data-nombre="sirena">
+            <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/300?text=Sirena')"></div>
+            <h3>🧜‍♀️ Tarta de Coral de Sirena</h3>
+            <p>Algas dulces del abismo + Perlas molidas + Espuma de mar cristalizada</p>
+            <div style="color: var(--burdeos); font-size: 1.4rem;">220 🪙</div>
+            <button class="nav-btn" onclick="agregarAlCarrito('Tarta de Sirena', 220)">✨ Conjurar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Historia -->
+<div id="historia" class="pantalla">
+    <header>
+        <h1>📖 La Leyenda del Horno</h1>
+        <button class="nav-btn" onclick="volverInicio()">🏠 Volver al Inicio</button>
+    </header>
+
+    <div class="historia">
+        <p>En los albores del tercer milenio, cuando los dragones aún surcaban los cielos,
+        el gran hechicero Aldarion forjó el primer Horno Ancestral con lava de volcán
+        y escamas de dragón. Durante siglos, custodiamos los secretos culinarios de
+        las antiguas civilizaciones élficas, mezclando ingredientes prohibidos y
+        técnicas alquímicas olvidadas.</p>
+
+        <p>Nuestras tortas son bendecidas por druidas del Bosque Eterno y cocidas
+        con el fuego primordial del Monte Doom. Cada bocado es un viaje a través
+        del tiempo, conservando el sabor auténtico de la era mágica.</p>
+        
+        <p>Desde las profundidades de las minas enanas hasta las nubes donde habitan los grifos,
+        nuestros maestros panaderos recorren el mundo en busca de los ingredientes más exquisitos
+        y mágicos para ofrecerte una experiencia culinaria como ninguna otra.</p>
+    </div>
+</div>
+
+<!-- Contacto -->
+<div id="contacto" class="pantalla">
+    <header>
+        <h1>📬 Contacto del Reino</h1>
+        <button class="nav-btn" onclick="volverInicio()">🏠 Volver al Inicio</button>
+    </header>
+
+    <div class="contacto">
+        <h3>📞 Llamar al Oráculo:</h3>
+        <p style="font-size: 1.5rem;">+1 234 567 890</p>
+        <h3>🦉 Enviar lechuza mensajera:</h3>
+        <p>Castillo Ancestral, Torre Oeste<br>Montañas de la Eternidad</p>
+        <h3>🔮 Visita nuestro grifo mensajero:</h3>
+        <p>Abierto de luna llena a luna nueva<br>Desde el canto del gallo hasta el aullido del lobo</p>
+    </div>
+</div>
+
+<!-- Carrito -->
+<div id="carrito" class="pantalla">
+    <header>
+        <h1>🛒 Saco del Mercader</h1>
+        <button class="nav-btn" onclick="volverInicio()">🏠 Volver al Inicio</button>
+    </header>
+
+    <div style="max-width: 800px; margin: 2rem auto; padding: 1rem;">
+        <div id="listaCarrito"></div>
+        <div style="border-top: 2px dashed var(--burdeos); margin: 2rem 0;"></div>
+        <p style="font-size: 1.5rem; text-align: center;">Total del Tributo: <span id="totalCarrito">0</span> 🪙</p>
+        <div style="display: flex; justify-content: center; gap: 1rem;">
+            <button class="nav-btn" onclick="finalizarCompra()">💎 Ofrenda Final</button>
+            <button class="nav-btn" onclick="vaciarCarrito()">🗑️ Vaciar Saco</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+
+    function mostrarPantalla(id) {
+        document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    function volverInicio() {
+        mostrarPantalla('inicio');
+    }
+
+    // Funciones del Carrito
+    function agregarAlCarrito(nombre, precio) {
+        const itemExistente = carrito.find(item => item.nombre === nombre);
+        if(itemExistente) {
+            itemExistente.cantidad++;
+        } else {
+            carrito.push({ nombre, precio, cantidad: 1 });
+        }
+        actualizarCarrito();
+        playSound('agregar');
+        mostrarAnimacion();
+    }
+
+    function actualizarCarrito() {
+        localStorage.setItem('carrito', JSON.stringify(carrito));
+        document.getElementById('contadorCarrito').textContent = carrito.reduce((total, item) => total + item.cantidad, 0);
+
+        let listaHTML = '';
+        let total = 0;
+        carrito.forEach((item, index) => {
+            const subtotal = item.precio * item.cantidad;
+            listaHTML += `
+                <div class="carrito-item">
+                    <div>
+                        <h3>${item.nombre}</h3>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <button class="nav-btn" onclick="ajustarCantidad(${index}, -1)">-</button>
+                            <span>${item.cantidad}</span>
+                            <button class="nav-btn" onclick="ajustarCantidad(${index}, 1)">+</button>
+                            <span>${subtotal} 🪙</span>
+                        </div>
+                    </div>
+                    <button class="nav-btn" onclick="eliminarItem(${index})">🗡️ Eliminar</button>
+                </div>
+            `;
+            total += subtotal;
+        });
+
+        document.getElementById('listaCarrito').innerHTML = listaHTML || '<p>El saco está vacío...</p>';
+        document.getElementById('totalCarrito').textContent = total;
+    }
+
+    function ajustarCantidad(index, cambio) {
+        carrito[index].cantidad += cambio;
+        if(carrito[index].cantidad < 1) carrito.splice(index, 1);
+        actualizarCarrito();
+        playSound('agregar');
+    }
+
+    function eliminarItem(index) {
+        carrito.splice(index, 1);
+        actualizarCarrito();
+    }
+
+    function vaciarCarrito() {
+        if(confirm('¿Vaciar todo el contenido del saco?')) {
+            carrito = [];
+            actualizarCarrito();
+        }
+    }
+
+    function finalizarCompra() {
+        if(carrito.length === 0) return;
+        if(confirm(`¿Ofrendar ${document.getElementById('totalCarrito').textContent} 🪙 a los dioses?`)) {
+            playSound('compra');
+            mostrarAnimacion();
+            carrito = [];
+            actualizarCarrito();
+            setTimeout(() => {
+                alert('¡Ofrenda aceptada! Tu pedido llegará por grifo mensajero.');
+                volverInicio();
+            }, 2000);
+        }
+    }
+
+    // Nuevas funciones agregadas
+    function filtrarProductos() {
+        const busqueda = document.getElementById('buscadorMenu').value.toLowerCase();
+        const productos = document.querySelectorAll('.torta-item');
+        
+        productos.forEach(producto => {
+            const nombre = producto.dataset.nombre.toLowerCase();
+            const texto = producto.textContent.toLowerCase();
+            if (nombre.includes(busqueda) || texto.includes(busqueda)) {
+                producto.style.display = 'block';
+            } else {
+                producto.style.display = 'none';
+            }
+        });
+    }
+
+    function filtrarPorCategoria(categoria) {
+        const productos = document.querySelectorAll('.torta-item');
+        
+        productos.forEach(producto => {
+            if (categoria === 'todos') {
+                producto.style.display = 'block';
+            } else {
+                const catProducto = producto.dataset.categoria;
+                if (catProducto === categoria) {
+                    producto.style.display = 'block';
+                } else {
+                    producto.style.display = 'none';
+                }
+            }
+        });
+    }
+
+    function mostrarAnimacion() {
+        const animacion = document.createElement('div');
+        animacion.innerHTML = '✨🦉✨';
+        animacion.style.position = 'fixed';
+        animacion.style.top = '50%';
+        animacion.style.left = '50%';
+        animacion.style.transform = 'translate(-50%, -50%)';
+        animacion.style.fontSize = '3rem';
+        animacion.style.animation = 'volar 2s forwards';
+        animacion.style.zIndex = '1000';
+        document.body.appendChild(animacion);
+        
+        setTimeout(() => {
+            animacion.remove();
+        }, 2000);
+    }
+
+    function playSound(efecto) {
+        const sounds = {
+            compra: 'https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3',
+            agregar: 'https://assets.mixkit.co/sfx/preview/mixkit-magic-sparkle-902.mp3'
+        };
+        const audio = new Audio(sounds[efecto]);
+        audio.volume = 0.3;
+        audio.play().catch(e => console.log("No se pudo reproducir sonido:", e));
+    }
+
+    // Inicializar
+    actualizarCarrito();
+</script>
+</body>
+</html><!DOCTYPE html>
+<html lang="es" data-theme="medieval">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Horno de las Tortas Ancestrales</title>
+<link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+<style>
+:root {
+--oro: #cda434;
+--burdeos: #6d1a1a;
+--madera: #3a2a1a;
+--pergamino: #f0e6d3;
+--piedra: #7a7569;
+}    body {
+        font-family: 'MedievalSharp', cursive;
+        background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAIklEQVQIW2NkQAKrVq36zwjjgzhhYWGMYAEYB8RmROaABADeOQ8CXl/xfgAAAABJRU5ErkJggg==') var(--pergamino);
+        color: var(--madera);
+        margin: 0;
+        min-height: 100vh;
+    }
+
+    .pantalla {
+        display: none;
+    }
+
+    .pantalla.active {
+        display: block;
+    }
+
+    .nav-btn {
+        background: var(--oro);
+        color: var(--burdeos);
+        border: 2px solid var(--burdeos);
+        padding: 1rem 2rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-family: 'UnifrakturMaguntia', cursive;
+        margin: 1rem;
+        width: 200px;
+        font-size: 1.2rem;
+    }
+
+    .nav-btn:hover {
+        transform: scale(1.1);
+        background: var(--burdeos);
+        color: var(--oro);
+    }
+
+    .torta-item {
+        background: linear-gradient(to bottom right, #f0e6d3, #e2d4b8);
+        border: 2px solid var(--burdeos);
+        padding: 1.5rem;
+        margin: 1rem;
+        box-shadow: 5px 5px 10px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+
+    .carrito-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 1rem 0;
+        padding: 0.5rem;
+        border-bottom: 1px dashed var(--burdeos);
+    }
+
+    header {
+        background: var(--madera);
+        padding: 1rem;
+        text-align: center;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+        color: var(--oro);
+        margin: 0;
+        font-family: 'UnifrakturMaguntia', cursive;
+    }
+
+    #inicio {
+        text-align: center;
+        padding: 2rem;
+    }
+
+    .historia {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 1rem;
+        line-height: 1.6;
+    }
+
+    .contacto {
+        text-align: center;
+        font-size: 1.2rem;
+        padding: 2rem;
+    }
+
+    /* Nuevos estilos agregados */
+    .producto-imagen {
+        height: 150px;
+        background: var(--pergamino);
+        border: 1px dashed var(--burdeos);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 1rem;
+        background-size: cover;
+        background-position: center;
+    }
+
+    #buscadorMenu {
+        padding: 0.5rem;
+        width: 80%;
+        max-width: 500px;
+        font-family: 'MedievalSharp';
+        border: 2px solid var(--burdeos);
+        background: var(--pergamino);
+    }
+
+    .recomendacion-item {
+        min-width: 200px;
+        padding: 1rem;
+        background: linear-gradient(to bottom right, #f0e6d3, #e2d4b8);
+        border: 2px solid var(--burdeos);
+        text-align: center;
+    }
+
+    @keyframes volar {
+        0% { transform: translate(-50%, -50%); opacity: 1; }
+        100% { transform: translate(-50%, -200%); opacity: 0; }
+    }
+
+    .filtros-container {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin: 1rem;
+    }
+
+    .scroll-recomendaciones {
+        display: flex;
+        overflow-x: auto;
+        gap: 1rem;
+        padding: 1rem;
+        justify-content: flex-start;
+    }
+
+    @media (max-width: 768px) {
+        .nav-btn {
+            width: 150px;
+            padding: 0.8rem 1rem;
+            font-size: 1rem;
+        }
+        
+        .producto-imagen {
+            height: 120px;
+        }
+        
+        .recomendacion-item {
+            min-width: 160px;
+        }
+    }
+</style>
+</head>
+<body>
+<!-- Pantalla de Inicio -->
+<div id="inicio" class="pantalla active">
+<header>
+<h1>🏰 El Horno de las Tortas Ancestrales 🏰</h1>
+</header>    <button class="nav-btn" onclick="mostrarPantalla('menu')">📜 Menú Mágico</button>
+    <button class="nav-btn" onclick="mostrarPantalla('historia')">📖 Nuestra Historia</button>
+    <button class="nav-btn" onclick="mostrarPantalla('contacto')">📬 Contacto</button>
+    <button class="nav-btn" onclick="mostrarPantalla('carrito')">🛒 Ver Saco (<span id="contadorCarrito">0</span>)</button>
+
+    <!-- Sección de Recomendaciones -->
+    <div style="margin-top: 2rem;">
+        <h2>⚔️ Recomendaciones del Herrero</h2>
+        <div class="scroll-recomendaciones">
+            <div class="recomendacion-item">
+                <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/150?text=Fénix')"></div>
+                <h3>🔥 Torta del Fénix</h3>
+                <button class="nav-btn" onclick="agregarAlCarrito('Torta del Fénix', 120)">120 🪙</button>
+            </div>
+            <div class="recomendacion-item">
+                <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/150?text=Dragón')"></div>
+                <h3>🐉 Torta de Dragón</h3>
+                <button class="nav-btn" onclick="agregarAlCarrito('Torta de Dragón', 200)">200 🪙</button>
+            </div>
+            <div class="recomendacion-item">
+                <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/150?text=Unicornio')"></div>
+                <h3>🦄 Magdalenas</h3>
+                <button class="nav-btn" onclick="agregarAlCarrito('Magdalenas Unicornio', 250)">250 🪙</button>
+            </div>
+            <div class="recomendacion-item">
+                <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/150?text=Sirena')"></div>
+                <h3>🧜‍♀️ Tarta Sirena</h3>
+                <button class="nav-btn" onclick="agregarAlCarrito('Tarta de Sirena', 220)">220 🪙</button>
+            </div>
+            <div class="recomendacion-item">
+                <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/150?text=Elfo')"></div>
+                <h3>🧝‍♂️ Tarta Élfica</h3>
+                <button class="nav-btn" onclick="agregarAlCarrito('Tarta Élfica', 180)">180 🪙</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Menú -->
+<div id="menu" class="pantalla">
+    <header>
+        <h1>📜 Menú Mágico</h1>
+        <button class="nav-btn" onclick="volverInicio()">🏠 Volver al Inicio</button>
+    </header>
+
+    <!-- Barra de búsqueda -->
+    <div style="text-align: center; margin: 1rem;">
+        <input type="text" id="buscadorMenu" placeholder="🔍 Buscar en los pergaminos..." 
+               oninput="filtrarProductos()">
+    </div>
+
+    <!-- Filtros por categoría -->
+    <div class="filtros-container">
+        <button class="nav-btn" onclick="filtrarPorCategoria('todos')">Todos</button>
+        <button class="nav-btn" onclick="filtrarPorCategoria('panes')">Panes</button>
+        <button class="nav-btn" onclick="filtrarPorCategoria('tortas')">Tortas</button>
+        <button class="nav-btn" onclick="filtrarPorCategoria('dulces')">Dulces</button>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); padding: 1rem;">
+        <!-- Producto 1 -->
+        <div class="torta-item" data-categoria="tortas" data-nombre="fénix">
+            <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/300?text=Fénix')"></div>
+            <h3>🔥 Torta del Fénix Resurgente</h3>
+            <p>Pan de centeno ancestral + Carne de grifo + Hongos luminosos</p>
+            <div style="color: var(--burdeos); font-size: 1.4rem;">120 🪙</div>
+            <button class="nav-btn" onclick="agregarAlCarrito('Torta del Fénix', 120)">✨ Conjurar</button>
+        </div>
+
+        <!-- Producto 2 -->
+        <div class="torta-item" data-categoria="panes" data-nombre="guerrero">
+            <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/300?text=Guerrero')"></div>
+            <h3>🍞 Pan del Guerrero Imponente</h3>
+            <p>Harina de trigo negro + Miel de avispas gigantes + Semillas de dragón</p>
+            <div style="color: var(--burdeos); font-size: 1.4rem;">85 🪙</div>
+            <button class="nav-btn" onclick="agregarAlCarrito('Pan del Guerrero', 85)">✨ Conjurar</button>
+        </div>
+
+        <!-- Producto 3 -->
+        <div class="torta-item" data-categoria="tortas" data-nombre="minotauro">
+            <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/300?text=Minotauro')"></div>
+            <h3>🧀 Tarta de Queso del Minotauro</h3>
+            <p>Leche de vaca sagrada + Hierbas del laberinto + Corteza de roble</p>
+            <div style="color: var(--burdeos); font-size: 1.4rem;">150 🪙</div>
+            <button class="nav-btn" onclick="agregarAlCarrito('Tarta de Queso', 150)">✨ Conjurar</button>
+        </div>
+
+        <!-- Producto 4 -->
+        <div class="torta-item" data-categoria="dulces" data-nombre="druida">
+            <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/300?text=Druida')"></div>
+            <h3>🍯 Bizcocho del Druida</h3>
+            <p>Harina de bellota + Polen de hadas + Savia de árbol anciano</p>
+            <div style="color: var(--burdeos); font-size: 1.4rem;">95 🪙</div>
+            <button class="nav-btn" onclick="agregarAlCarrito('Bizcocho del Druida', 95)">✨ Conjurar</button>
+        </div>
+
+        <!-- Producto 5 -->
+        <div class="torta-item" data-categoria="tortas" data-nombre="dragón">
+            <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/300?text=Dragón')"></div>
+            <h3>🐉 Torta de Escamas de Dragón</h3>
+            <p>Harina de carbón + Escamas molidas de dragón rojo + Lágrimas de sirena</p>
+            <div style="color: var(--burdeos); font-size: 1.4rem;">200 🪙</div>
+            <button class="nav-btn" onclick="agregarAlCarrito('Torta de Dragón', 200)">✨ Conjurar</button>
+        </div>
+
+        <!-- Producto 6 -->
+        <div class="torta-item" data-categoria="dulces" data-nombre="hadas">
+            <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/300?text=Hadas')"></div>
+            <h3>🧚‍♂️ Pastel de las Hadas Silvestres</h3>
+            <p>Polvo de estrellas + Miel de flores prohibidas + Alas de hada cristalizadas</p>
+            <div style="color: var(--burdeos); font-size: 1.4rem;">175 🪙</div>
+            <button class="nav-btn" onclick="agregarAlCarrito('Pastel de Hadas', 175)">✨ Conjurar</button>
+        </div>
+
+        <!-- Producto 7 -->
+        <div class="torta-item" data-categoria="panes" data-nombre="gigante">
+            <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/300?text=Gigante')"></div>
+            <h3>🏔️ Hogaza del Gigante Durmiente</h3>
+            <p>Harina de montaña + Levadura de caverna + Sal de lagos subterráneos</p>
+            <div style="color: var(--burdeos); font-size: 1.4rem;">90 🪙</div>
+            <button class="nav-btn" onclick="agregarAlCarrito('Hogaza Gigante', 90)">✨ Conjurar</button>
+        </div>
+
+        <!-- Producto 8 -->
+        <div class="torta-item" data-categoria="tortas" data-nombre="unicornio">
+            <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/300?text=Unicornio')"></div>
+            <h3>🦄 Magdalenas de Cuerno de Unicornio</h3>
+            <p>Polvo de cuerno de unicornio + Leche de nube + Azúcar arcoíris</p>
+            <div style="color: var(--burdeos); font-size: 1.4rem;">250 🪙</div>
+            <button class="nav-btn" onclick="agregarAlCarrito('Magdalenas Unicornio', 250)">✨ Conjurar</button>
+        </div>
+
+        <!-- Producto 9 -->
+        <div class="torta-item" data-categoria="dulces" data-nombre="bruja">
+            <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/300?text=Bruja')"></div>
+            <h3>🧙‍♀️ Galletas de la Bruja Sabia</h3>
+            <p>Harina de mandrágora + Huevos de basiliscos + Chocolate negro encantado</p>
+            <div style="color: var(--burdeos); font-size: 1.4rem;">110 🪙</div>
+            <button class="nav-btn" onclick="agregarAlCarrito('Galletas de Bruja', 110)">✨ Conjurar</button>
+        </div>
+
+        <!-- Producto 10 -->
+        <div class="torta-item" data-categoria="panes" data-nombre="enano">
+            <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/300?text=Enano')"></div>
+            <h3>⛏️ Pan de las Minas Enanas</h3>
+            <p>Harina de roca + Agua de manantial profundo + Semillas de cristal</p>
+            <div style="color: var(--burdeos); font-size: 1.4rem;">75 🪙</div>
+            <button class="nav-btn" onclick="agregarAlCarrito('Pan Enano', 75)">✨ Conjurar</button>
+        </div>
+
+        <!-- Producto 11 -->
+        <div class="torta-item" data-categoria="tortas" data-nombre="elfo">
+            <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/300?text=Elfo')"></div>
+            <h3>🧝‍♂️ Tarta Élfica del Bosque Eterno</h3>
+            <p>Frutos del árbol milenario + Néctar de flor lunar + Masa de savia dorada</p>
+            <div style="color: var(--burdeos); font-size: 1.4rem;">180 🪙</div>
+            <button class="nav-btn" onclick="agregarAlCarrito('Tarta Élfica', 180)">✨ Conjurar</button>
+        </div>
+
+        <!-- Producto 12 -->
+        <div class="torta-item" data-categoria="dulces" data-nombre="mago">
+            <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/300?text=Mago')"></div>
+            <h3>🔮 Rosquillas del Mago Merlín</h3>
+            <p>Anillos de polvo de hechizo + Glaseado de runas + Relleno de conocimiento arcano</p>
+            <div style="color: var(--burdeos); font-size: 1.4rem;">160 🪙</div>
+            <button class="nav-btn" onclick="agregarAlCarrito('Rosquillas Mágicas', 160)">✨ Conjurar</button>
+        </div>
+
+        <!-- Producto 13 -->
+        <div class="torta-item" data-categoria="panes" data-nombre="barbaro">
+            <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/300?text=Bárbaro')"></div>
+            <h3>🪓 Pan Bárbaro del Norte</h3>
+            <p>Harina de trigo de batalla + Agua de glaciar + Sal de lágrimas de enemigos</p>
+            <div style="color: var(--burdeos); font-size: 1.4rem;">85 🪙</div>
+            <button class="nav-btn" onclick="agregarAlCarrito('Pan Bárbaro', 85)">✨ Conjurar</button>
+        </div>
+
+        <!-- Producto 14 -->
+        <div class="torta-item" data-categoria="tortas" data-nombre="sirena">
+            <div class="producto-imagen" style="background-image: url('https://via.placeholder.com/300?text=Sirena')"></div>
+            <h3>🧜‍♀️ Tarta de Coral de Sirena</h3>
+            <p>Algas dulces del abismo + Perlas molidas + Espuma de mar cristalizada</p>
+            <div style="color: var(--burdeos); font-size: 1.4rem;">220 🪙</div>
+            <button class="nav-btn" onclick="agregarAlCarrito('Tarta de Sirena', 220)">✨ Conjurar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Historia -->
+<div id="historia" class="pantalla">
+    <header>
+        <h1>📖 La Leyenda del Horno</h1>
+        <button class="nav-btn" onclick="volverInicio()">🏠 Volver al Inicio</button>
+    </header>
+
+    <div class="historia">
+        <p>En los albores del tercer milenio, cuando los dragones aún surcaban los cielos,
+        el gran hechicero Aldarion forjó el primer Horno Ancestral con lava de volcán
+        y escamas de dragón. Durante siglos, custodiamos los secretos culinarios de
+        las antiguas civilizaciones élficas, mezclando ingredientes prohibidos y
+        técnicas alquímicas olvidadas.</p>
+
+        <p>Nuestras tortas son bendecidas por druidas del Bosque Eterno y cocidas
+        con el fuego primordial del Monte Doom. Cada bocado es un viaje a través
+        del tiempo, conservando el sabor auténtico de la era mágica.</p>
+        
+        <p>Desde las profundidades de las minas enanas hasta las nubes donde habitan los grifos,
+        nuestros maestros panaderos recorren el mundo en busca de los ingredientes más exquisitos
+        y mágicos para ofrecerte una experiencia culinaria como ninguna otra.</p>
+    </div>
+</div>
+
+<!-- Contacto -->
+<div id="contacto" class="pantalla">
+    <header>
+        <h1>📬 Contacto del Reino</h1>
+        <button class="nav-btn" onclick="volverInicio()">🏠 Volver al Inicio</button>
+    </header>
+
+    <div class="contacto">
+        <h3>📞 Llamar al Oráculo:</h3>
+        <p style="font-size: 1.5rem;">+1 234 567 890</p>
+        <h3>🦉 Enviar lechuza mensajera:</h3>
+        <p>Castillo Ancestral, Torre Oeste<br>Montañas de la Eternidad</p>
+        <h3>🔮 Visita nuestro grifo mensajero:</h3>
+        <p>Abierto de luna llena a luna nueva<br>Desde el canto del gallo hasta el aullido del lobo</p>
+    </div>
+</div>
+
+<!-- Carrito -->
+<div id="carrito" class="pantalla">
+    <header>
+        <h1>🛒 Saco del Mercader</h1>
+        <button class="nav-btn" onclick="volverInicio()">🏠 Volver al Inicio</button>
+    </header>
+
+    <div style="max-width: 800px; margin: 2rem auto; padding: 1rem;">
+        <div id="listaCarrito"></div>
+        <div style="border-top: 2px dashed var(--burdeos); margin: 2rem 0;"></div>
+        <p style="font-size: 1.5rem; text-align: center;">Total del Tributo: <span id="totalCarrito">0</span> 🪙</p>
+        <div style="display: flex; justify-content: center; gap: 1rem;">
+            <button class="nav-btn" onclick="finalizarCompra()">💎 Ofrenda Final</button>
+            <button class="nav-btn" onclick="vaciarCarrito()">🗑️ Vaciar Saco</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+
+    function mostrarPantalla(id) {
+        document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    function volverInicio() {
+        mostrarPantalla('inicio');
+    }
+
+    // Funciones del Carrito
+    function agregarAlCarrito(nombre, precio) {
+        const itemExistente = carrito.find(item => item.nombre === nombre);
+        if(itemExistente) {
+            itemExistente.cantidad++;
+        } else {
+            carrito.push({ nombre, precio, cantidad: 1 });
+        }
+        actualizarCarrito();
+        playSound('agregar');
+        mostrarAnimacion();
+    }
+
+    function actualizarCarrito() {
+        localStorage.setItem('carrito', JSON.stringify(carrito));
+        document.getElementById('contadorCarrito').textContent = carrito.reduce((total, item) => total + item.cantidad, 0);
+
+        let listaHTML = '';
+        let total = 0;
+        carrito.forEach((item, index) => {
+            const subtotal = item.precio * item.cantidad;
+            listaHTML += `
+                <div class="carrito-item">
+                    <div>
+                        <h3>${item.nombre}</h3>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <button class="nav-btn" onclick="ajustarCantidad(${index}, -1)">-</button>
+                            <span>${item.cantidad}</span>
+                            <button class="nav-btn" onclick="ajustarCantidad(${index}, 1)">+</button>
+                            <span>${subtotal} 🪙</span>
+                        </div>
+                    </div>
+                    <button class="nav-btn" onclick="eliminarItem(${index})">🗡️ Eliminar</button>
+                </div>
+            `;
+            total += subtotal;
+        });
+
+        document.getElementById('listaCarrito').innerHTML = listaHTML || '<p>El saco está vacío...</p>';
+        document.getElementById('totalCarrito').textContent = total;
+    }
+
+    function ajustarCantidad(index, cambio) {
+        carrito[index].cantidad += cambio;
+        if(carrito[index].cantidad < 1) carrito.splice(index, 1);
+        actualizarCarrito();
+        playSound('agregar');
+    }
+
+    function eliminarItem(index) {
+        carrito.splice(index, 1);
+        actualizarCarrito();
+    }
+
+    function vaciarCarrito() {
+        if(confirm('¿Vaciar todo el contenido del saco?')) {
+            carrito = [];
+            actualizarCarrito();
+        }
+    }
+
+    function finalizarCompra() {
+        if(carrito.length === 0) return;
+        if(confirm(`¿Ofrendar ${document.getElementById('totalCarrito').textContent} 🪙 a los dioses?`)) {
+            playSound('compra');
+            mostrarAnimacion();
+            carrito = [];
+            actualizarCarrito();
+            setTimeout(() => {
+                alert('¡Ofrenda aceptada! Tu pedido llegará por grifo mensajero.');
+                volverInicio();
+            }, 2000);
+        }
+    }
+
+    // Nuevas funciones agregadas
+    function filtrarProductos() {
+        const busqueda = document.getElementById('buscadorMenu').value.toLowerCase();
+        const productos = document.querySelectorAll('.torta-item');
+        
+        productos.forEach(producto => {
+            const nombre = producto.dataset.nombre.toLowerCase();
+            const texto = producto.textContent.toLowerCase();
+            if (nombre.includes(busqueda) || texto.includes(busqueda)) {
+                producto.style.display = 'block';
+            } else {
+                producto.style.display = 'none';
+            }
+        });
+    }
+
+    function filtrarPorCategoria(categoria) {
+        const productos = document.querySelectorAll('.torta-item');
+        
+        productos.forEach(producto => {
+            if (categoria === 'todos') {
+                producto.style.display = 'block';
+            } else {
+                const catProducto = producto.dataset.categoria;
+                if (catProducto === categoria) {
+                    producto.style.display = 'block';
+                } else {
+                    producto.style.display = 'none';
+                }
+            }
+        });
+    }
+
+    function mostrarAnimacion() {
+        const animacion = document.createElement('div');
+        animacion.innerHTML = '✨🦉✨';
+        animacion.style.position = 'fixed';
+        animacion.style.top = '50%';
+        animacion.style.left = '50%';
+        animacion.style.transform = 'translate(-50%, -50%)';
+        animacion.style.fontSize = '3rem';
+        animacion.style.animation = 'volar 2s forwards';
+        animacion.style.zIndex = '1000';
+        document.body.appendChild(animacion);
+        
+        setTimeout(() => {
+            animacion.remove();
+        }, 2000);
+    }
+
+    function playSound(efecto) {
+        const sounds = {
+            compra: 'https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3',
+            agregar: 'https://assets.mixkit.co/sfx/preview/mixkit-magic-sparkle-902.mp3'
+        };
+        const audio = new Audio(sounds[efecto]);
+        audio.volume = 0.3;
+        audio.play().catch(e => console.log("No se pudo reproducir sonido:", e));
+    }
+
+    // Inicializar
+    actualizarCarrito();
+</script>
+</body>
+</html>
